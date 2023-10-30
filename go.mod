@@ -1,4 +1,4 @@
-module gonsola
+module github.com/ungopher/gonsola
 
 go 1.21.1
 

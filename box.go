@@ -88,7 +88,7 @@ type boxing struct {
 }
 
 func (b *boxing) Render() {
-	width := 0
+	max_length := 0
 	messages := []string{}
 	style := boxStyles[b.options.Style]
 
@@ -97,7 +97,7 @@ func (b *boxing) Render() {
 	}
 
 	if b.options.Fill {
-		width = b.term_width - 2
+		max_length = b.term_width - 2
 	}
 
 	for _, v := range strings.Split(b.message, "\n") {
@@ -107,32 +107,59 @@ func (b *boxing) Render() {
 
 		v = strings.ReplaceAll(v, "\t", "    ")
 
-		if len(v) > width {
-			width = len(v)
+		if len(v) > max_length {
+			max_length = len(v)
 		}
 
 		messages = append(messages, v)
 
 	}
 
-	b.RenderTop(width, style)
+	b.RenderTop(max_length, style)
 
 	for i := 0; i < b.options.Padding/4; i++ {
-		b.RenderYPad(width, style)
+		b.RenderYPad(max_length, style)
 	}
 
 	for _, v := range messages {
-		leftPad := width - len(v) + b.options.Padding
-		rightPad := width - len(v) + b.options.Padding
+		length := len(v)
+		left_pad := b.options.Padding
+		right_pad := b.options.Padding
 
-		fmt.Print(style.v, strings.Repeat(" ", leftPad), v, strings.Repeat(" ", rightPad), style.v, "\n")
+		if v == "" {
+			fmt.Print(style.v, strings.Repeat(" ", max_length), style.v, "\n")
+
+			continue
+		}
+
+		if b.options.Center && length < max_length {
+			left_pad = (max_length - length) / 2
+		}
+
+		if !b.options.Center && b.options.Fill {
+			right_pad = max_length - length - left_pad
+		}
+
+		fmt.Print(style.v)
+
+		for i := 0; i < left_pad; i++ {
+			fmt.Print(" ")
+		}
+
+		fmt.Print(stringsPadTo(v, " ", max_length))
+
+		for i := 0; i < right_pad; i++ {
+			fmt.Print(" ")
+		}
+
+		fmt.Print(style.v, "\n")
 	}
 
 	for i := 0; i < b.options.Padding/4; i++ {
-		b.RenderYPad(width, style)
+		b.RenderYPad(max_length, style)
 	}
 
-	b.RenderBottom(width, style)
+	b.RenderBottom(max_length, style)
 
 }
 

@@ -1,8 +1,9 @@
 package gonsola_test
 
 import (
-	"gonsola"
 	"testing"
+
+	"github.com/ungopher/gonsola"
 )
 
 func TestBasicFunctions(t *testing.T) {
@@ -14,7 +15,8 @@ func TestBasicFunctions(t *testing.T) {
 	g.Success("Project built")
 	g.Error("Nothing is wrong. All fine!")
 
-	g.Box("This is cramped box", gonsola.BoxOptions{})
+	g.Box("This is a cramped box", gonsola.BoxOptions{})
 
-	g.Box("probably a better box.\n\n\np.s. wow i can this", gonsola.BoxOptions{Fill: true, Padding: 8, Style: "double"})
+	g.Box("probably a better box.\n\n\np.s. wow i can this", gonsola.BoxOptions{Fill: true, Padding: 8, Center: true, Style: "double"})
+	g.Box("another one of your mom\n\nwhat? with no center", gonsola.BoxOptions{Padding: 8, Style: "rounded"})
 }
